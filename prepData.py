@@ -65,7 +65,7 @@ accuracy = 100*tf.reduce_mean(tf.cast(tf.equal(vox, voxTrue), tf.float32))
 rhinoDataset = dataset('data/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    loadModel(sess, model_save_path)
+    # loadModel(sess, model_save_path)
 
     cycles = 10
     startTime = time.time()
