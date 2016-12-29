@@ -67,7 +67,7 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     # loadModel(sess, model_save_path)
 
-    cycles = 2000
+    cycles = 4000
     startTime = time.time()
 
     for i in range(cycles):
