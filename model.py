@@ -7,7 +7,7 @@ import sys
 
 # global params
 batch_size = 5
-learning_rate = 0.001
+learning_rate = 0.0001
 model_save_path = 'savedModels/model_1.ckpt'
 # this method saves the model
 def saveModel(sess, savePath):
@@ -67,7 +67,7 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     # loadModel(sess, model_save_path)
 
-    cycles = 10
+    cycles = 2000
     startTime = time.time()
 
     for i in range(cycles):
@@ -91,7 +91,7 @@ with tf.Session() as sess:
                 voxTrue: testBatch[1]
             })
 
-            print('Accuracy: %.2f%s'%(acc, ' '*40))
+            print('Accuracy: %.2f%s'%(acc, ' '*50))
     
     # now saving the trained model
     saveModel(sess, model_save_path)
