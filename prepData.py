@@ -2,42 +2,26 @@ import pickle
 from PIL import Image
 import numpy as np
 from ops import *
-import time
+# import time
+import sys
 
 # global params
-imgSize = (24, 32)
 batch_size = 5
+learning_rate = 0.001
+model_save_path = 'savedModels/model_1.ckpt'
+# this method saves the model
+def saveModel(sess, savePath):
+    saver = tf.train.Saver()
+    saver.save(sess, savePath)
+    print('saved the model to %s'%savePath)
 
-# converts data to image
-def toImage(data):
-    data = np.reshape(data, imgSize)
-    newData = 255*data
-    # converting new data into integer format to make it possible to export it as a bitmap
-    # in this case converting it into 8 bit integer
-    newData = newData.astype(np.uint8)
-    return Image.fromarray(newData)
+# this method loads the saved model
+def loadModel(sess, savedPath):
+    saver = tf.train.Saver()
+    saver.restore(sess, savedPath)
+    print('loaded the model from to %s'%savedPath)
 
-# this method loads the data file
-with open('data/1.pkl','rb') as inp:
-    dSet = pickle.load(inp)
-
-data = [np.expand_dims(np.array(dSet[0]),3), np.expand_dims(np.array(dSet[1]), 4)]
-counter = 0
-def next_batch():
-    dSize = data[0].shape[0]
-    global counter
-    print(counter)
-    batch = [data[0][counter: counter+batch_size], data[1][counter: counter+batch_size]]
-    counter = (counter+5)%dSize
-
-    return batch
-# print(data[0].shape, data[1].shape)
-
-for i in range(50):
-    img = toImage(data[0][i:i+1])
-    img.save('imgs/%s.png'%i)
-# print(data[0].shape, data[1].shape)
-
+# now creating all the variables in the model
 with tf.variable_scope('vars'):
     wc1 = weightVariable([5,5,1,24],'wc1')
     bc1 = biasVariable([24],'bc1')
@@ -73,24 +57,41 @@ m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
 
 loss = tf.reduce_mean(tf.square(voxTrue - m2))
 
-optim = tf.train.AdamOptimizer(0.001).minimize(loss)
+optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
 vox = tf.floor(2*m2)
 accuracy = 100*tf.reduce_mean(tf.cast(tf.equal(vox, voxTrue), tf.float32))
 
+rhinoDataset = dataset('data/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    cycles = 100
+    loadModel(sess, model_save_path)
+
+    cycles = 10
     startTime = time.time()
+
     for i in range(cycles):
-        batch = next_batch()
-        _, val = sess.run([optim, accuracy], feed_dict={
+        batch = rhinoDataset.next_batch(batch_size)
+        _ = sess.run(optim, feed_dict={
             view: batch[0],
             voxTrue: batch[1]
         })
 
-        print(val)
-    
-    timeElapsed = time.time() - startTime
+        timer = estimate_time(startTime, cycles, i)
+        pL = 10 # this is the length of the progress bar to be displayed
+        pNum = i % pL
+        pBar = '#'*pNum + ' '*(pL - pNum)
 
-    print('time: %.2f seconds'%timeElapsed)
+        sys.stdout.write('...Training...|%s|-(%s/%s)- %s\r'%(pBar, i, cycles, timer))
+
+        if i % 10 == 0:
+            testBatch = rhinoDataset.test_batch(batch_size)
+            acc = sess.run(accuracy, feed_dict={
+                view: testBatch[0],
+                voxTrue: testBatch[1]
+            })
+
+            print('Accuracy: %.2f%s'%(acc, ' '*40))
+    
+    # now saving the trained model
+    saveModel(sess, model_save_path)
