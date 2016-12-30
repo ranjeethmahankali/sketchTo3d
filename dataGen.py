@@ -113,7 +113,7 @@ class scene:
 					#check if point inside
 					for surf in self.objects:
 						if rs.IsPointInSurface(surf, [x,y,z]):
-							if arr[x+11][y+11][z] == 0:arr[x-xLim[0]][y-yLim[0]][z] = 1
+							if arr[x-xLim[0]][y-yLim[0]][z] == 0:arr[x-xLim[0]][y-yLim[0]][z] = 1
 							break
 					z += 1
 				y += 1
