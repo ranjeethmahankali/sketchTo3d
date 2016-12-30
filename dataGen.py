@@ -122,24 +122,24 @@ class scene:
 		return arr
 	
 scn = scene()
-views = []
-models = []
-rs.EnableRedraw(False)
-scn.populate([1,3])
-rs.EnableRedraw(True)
-for i in range(sampleNum):
-	img_data = scn.getView()
-	voxel_data = scn.getVoxelBytes()
-	
-	views.append(img_data)
-	models.append(voxel_data)
-
-#scn.reset()
-
-fileName = input('Enter File Name:')
-writeToFile([views, models], 'results/test')
-
-#with open('results/vox.pkl', 'rb') as inp:
-#	vox = pickle.load(inp)
+#views = []
+#models = []
+#rs.EnableRedraw(False)
+#scn.populate([1,3])
+#rs.EnableRedraw(True)
+#for i in range(sampleNum):
+#	img_data = scn.getView()
+#	voxel_data = scn.getVoxelBytes()
+#	
+#	views.append(img_data)
+#	models.append(voxel_data)
 #
-#cld = scn.getVoxels(vox[0])
+##scn.reset()
+#
+#fileName = input('Enter File Name:')
+#writeToFile([views, models], 'results/test')
+
+with open('results/vox.pkl', 'rb') as inp:
+	vox = pickle.load(inp)
+
+cld = scn.getVoxels(vox[0])

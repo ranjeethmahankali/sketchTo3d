@@ -1,8 +1,4 @@
-import pickle
-from PIL import Image
-import numpy as np
 from ops import *
-# import time
 import sys
 
 # global params
@@ -53,43 +49,9 @@ m0 = tf.reshape(h2, [-1,6,6,4,16])
 m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,8]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
 
-loss = tf.nn.sigmoid_cross_entropy_with_logits(m2, voxTrue)
+loss = tf.reduce_mean(tf.square(m2 - voxTrue))
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
 vox = tf.floor(2*m2)
 accuracy = 100*tf.reduce_mean(tf.cast(tf.equal(vox, voxTrue), tf.float32))
-
-rhinoDataset = dataset('data/')
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    # loadModel(sess, model_save_path)
-
-    cycles = 4000
-    startTime = time.time()
-
-    for i in range(cycles):
-        batch = rhinoDataset.next_batch(batch_size)
-        _ = sess.run(optim, feed_dict={
-            view: batch[0],
-            voxTrue: batch[1]
-        })
-
-        timer = estimate_time(startTime, cycles, i)
-        pL = 10 # this is the length of the progress bar to be displayed
-        pNum = i % pL
-        pBar = '#'*pNum + ' '*(pL - pNum)
-
-        sys.stdout.write('...Training...|%s|-(%s/%s)- %s\r'%(pBar, i, cycles, timer))
-
-        if i % 10 == 0:
-            testBatch = rhinoDataset.test_batch(batch_size)
-            acc = sess.run(accuracy, feed_dict={
-                view: testBatch[0],
-                voxTrue: testBatch[1]
-            })
-
-            print('Accuracy: %.2f%s'%(acc, ' '*50))
-    
-    # now saving the trained model
-    saveModel(sess, model_save_path)
