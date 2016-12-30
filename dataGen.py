@@ -9,7 +9,6 @@ sampleNum = int(input('Enter number of samples:'))
 
 currentView = sc.doc.Views.ActiveView
 picSize = Size(32,24)
-modelSpace = [100,100,60]
 xLim = [-11,12]
 yLim = [-11,12]
 zLim = [0,15]
@@ -84,6 +83,19 @@ class scene:
 				
 		return arr
 	
+	#converts 3d array into voxels and returns it as a point cloud
+	def getVoxels(self, bytes):
+		ptList = []
+		for x in range(len(bytes)):
+			for y in range(len(bytes[x])):
+				for z in range(len(bytes[x][y])):
+					if bytes[x][y][z] == 1:
+						ptList.append([x+xLim[0],y+yLim[0],z])
+		
+		cloudID = rs.AddPointCloud(ptList)
+		return cloudID
+						
+	
 	#return voxels as a 3d array
 	def getVoxelBytes(self):
 		xR = xLim[1] - xLim[0] + 1
@@ -101,7 +113,7 @@ class scene:
 					#check if point inside
 					for surf in self.objects:
 						if rs.IsPointInSurface(surf, [x,y,z]):
-							if arr[x][y][z] == 0:arr[x][y][z] = 1
+							if arr[x+11][y+11][z] == 0:arr[x-xLim[0]][y-yLim[0]][z] = 1
 							break
 					z += 1
 				y += 1
@@ -112,8 +124,8 @@ class scene:
 scn = scene()
 views = []
 models = []
+rs.EnableRedraw(False)
 for i in range(sampleNum):
-	rs.EnableRedraw(False)
 	scn.populate([1,3])
 	rs.EnableRedraw(True)
 	img_data = scn.getView()
@@ -121,9 +133,8 @@ for i in range(sampleNum):
 	
 	views.append(img_data)
 	models.append(voxel_data)
+	rs.EnableRedraw(False)
 	scn.reset()
 
 fileName = input('Enter File Name:')
 writeToFile([views, models], fileName)
-
-#print(data)
