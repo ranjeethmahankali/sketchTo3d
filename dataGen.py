@@ -14,7 +14,7 @@ yLim = [-11,12]
 zLim = [0,15]
 
 def writeToFile(data, name):
-	with open('data/'+str(name)+'.pkl', 'wb') as output:
+	with open(str(name)+'.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 class scene:
@@ -125,16 +125,21 @@ scn = scene()
 views = []
 models = []
 rs.EnableRedraw(False)
+scn.populate([1,3])
+rs.EnableRedraw(True)
 for i in range(sampleNum):
-	scn.populate([1,3])
-	rs.EnableRedraw(True)
 	img_data = scn.getView()
 	voxel_data = scn.getVoxelBytes()
 	
 	views.append(img_data)
 	models.append(voxel_data)
-	rs.EnableRedraw(False)
-	scn.reset()
+
+#scn.reset()
 
 fileName = input('Enter File Name:')
-writeToFile([views, models], fileName)
+writeToFile([views, models], 'results/test')
+
+#with open('results/vox.pkl', 'rb') as inp:
+#	vox = pickle.load(inp)
+#
+#cld = scn.getVoxels(vox[0])

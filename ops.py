@@ -7,7 +7,22 @@ from PIL import Image
 
 # some global params
 # the directory to which teh results will be saved
+batch_size = 5
 resDir = 'results/'
+learning_rate = 0.0001
+model_save_path = 'savedModels/model_1.ckpt'
+
+# this method saves the model
+def saveModel(sess, savePath):
+    saver = tf.train.Saver()
+    saver.save(sess, savePath)
+    print('saved the model to %s'%savePath)
+
+# this method loads the saved model
+def loadModel(sess, savedPath):
+    saver = tf.train.Saver()
+    saver.restore(sess, savedPath)
+    print('loaded the model from to %s'%savedPath)
 
 # weight variable
 def weightVariable(shape, name):
@@ -69,7 +84,9 @@ class dataset:
         # removing the test data file from the list of training data files
         self.trainFileList.remove(self.testFileName)
         
-        self.curFile = self.trainFileList[0]
+        self.curFile = None
+        if len(self.trainFileList) > 0:
+            self.curFile = self.trainFileList[0]
         self.data = None
         self.test_data = None
         self.load_data()
@@ -171,5 +188,7 @@ def saveResults(batch, fileName='vox.pkl', version = 2):
     for i in range(imgNum):
         img  = toImage(batch[0][i:i+1])
         img.save(resDir+'%s.png'%i)
+    
+    print(' ... results saved')
 # from here down is the sandbox place to check and verify the code above before using it in
 # the other files
