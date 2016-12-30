@@ -50,8 +50,6 @@ h2 = tf.nn.relu(conv2d(h1, wc2) + bc2)
 
 m0 = tf.reshape(h2, [-1,6,6,4,16])
 
-# print(m0.get_shape(), wd1.get_shape())
-
 m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,8]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
 
