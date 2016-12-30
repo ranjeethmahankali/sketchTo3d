@@ -160,12 +160,12 @@ def voxToRhino(vox_np_data):
     vox = vox_np_data.squeeze(axis=4).tolist()
     return vox
 # This method saves a batch of results as images and vox lists to compare
-def saveResults(batch, fileName='vox.pkl'):
+def saveResults(batch, fileName='vox.pkl', version = 2):
     # batch is a list of len 2 batch[0] is the images and batch[1] is the voxels
     # now convertiing the voxels for rhino and pickling them
     vox = voxToRhino(batch[1])
     with open(resDir+fileName, 'wb') as output:
-        pickle.dump(vox, output, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(vox, output, protocol = version)
     
     imgNum = batch[0].shape[0]
     for i in range(imgNum):
@@ -173,6 +173,3 @@ def saveResults(batch, fileName='vox.pkl'):
         img.save(resDir+'%s.png'%i)
 # from here down is the sandbox place to check and verify the code above before using it in
 # the other files
-# dSet = dataset('data/')
-# batch = dSet.next_batch(5)
-# saveResults(batch)
