@@ -19,19 +19,20 @@ def loadModel(sess, savedPath):
 
 # now creating all the variables in the model
 with tf.variable_scope('vars'):
-    wc1 = weightVariable([5,5,1,24],'wc1')
-    bc1 = biasVariable([24],'bc1')
-    wc2 = weightVariable([5,5,24,48],'wc2')
-    bc2 = biasVariable([48], 'bc2')
+    w1 = weightVariable([768, 1536],'w1')
+    b1 = biasVariable([1536],'b1')
+    w2 = weightVariable([1536, 2304],'w2')
+    b2 = biasVariable([2304], 'b2')
 
     wd1 = weightVariable([5,5,5,8,16],'wd1')
     bd1 = biasVariable([8], 'bd1')
     wd2 = weightVariable([5,5,5,1,8],'wd2')
     bd2 = biasVariable([1], 'bd2')
 
-# [-1, 24,32,1]
-# [-1, 12, 16, 24] - h1
-# [-1, 6, 8, 48] - h2
+# [-1, 24,32,1] - view
+# [-1, 768] - flattened
+# [-1, 1536] - h1
+# [-1, 2304] - h2
 
 # [-1, 6,6,4,16] - m0
 
@@ -41,8 +42,10 @@ with tf.variable_scope('vars'):
 view = tf.placeholder(tf.float32, shape=[None, 24, 32, 1])
 voxTrue = tf.placeholder(tf.float32, shape=[None, 24, 24, 16, 1])
 
-h1 = tf.nn.relu(conv2d(view, wc1) + bc1)
-h2 = tf.nn.relu(conv2d(h1, wc2) + bc2)
+flattened = tf.reshape(view, [-1, 768])
+
+h1 = tf.nn.relu(tf.matmul(flattened, w1) + b1)
+h2 = tf.nn.relu(tf.matmul(h1, w2) + b2)
 
 m0 = tf.reshape(h2, [-1,6,6,4,16])
 
