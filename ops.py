@@ -7,7 +7,7 @@ from PIL import Image
 
 # some global params
 # the directory to which teh results will be saved
-batch_size = 5
+batch_size = 1
 resDir = 'results/'
 learning_rate = 1e-5
 model_save_path = 'savedModels/model_1.ckpt'

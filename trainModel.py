@@ -24,12 +24,12 @@ with tf.Session() as sess:
 
         if i % 20 == 0:
             testBatch = rhinoDataset.test_batch(batch_size)
-            acc = sess.run(accuracy, feed_dict={
+            acc, v = sess.run([accuracy, vox], feed_dict={
                 view: testBatch[0],
                 voxTrue: testBatch[1]
             })
 
-            print('Accuracy: %.2f%s'%(acc, ' '*50))
+            print('Accuracy: %.2f, %.2f, %.2f%s'%(acc,v.sum(),testBatch[1].sum(),' '*50))
     
     # now saving the trained model every 1500 cycles
         if i % 1000 == 0 and i != 0:
