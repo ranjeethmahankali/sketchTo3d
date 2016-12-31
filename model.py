@@ -49,7 +49,7 @@ m0 = tf.reshape(h2, [-1,6,6,4,16])
 m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,8]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
 
-loss = tf.reduce_mean(tf.square(m2 - voxTrue))
+loss = tf.reduce_sum(tf.log(tf.abs(m2 - voxTrue)))
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 

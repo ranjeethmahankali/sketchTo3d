@@ -3,7 +3,7 @@ from model import *
 rhinoDataset = dataset('data/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    loadModel(sess, model_save_path)
+    # loadModel(sess, model_save_path)
 
     cycles = 8000
     startTime = time.time()
@@ -22,7 +22,7 @@ with tf.Session() as sess:
 
         sys.stdout.write('...Training...|%s|-(%s/%s)- %s\r'%(pBar, i, cycles, timer))
 
-        if i % 10 == 0:
+        if i % 20 == 0:
             testBatch = rhinoDataset.test_batch(batch_size)
             acc = sess.run(accuracy, feed_dict={
                 view: testBatch[0],
@@ -31,5 +31,9 @@ with tf.Session() as sess:
 
             print('Accuracy: %.2f%s'%(acc, ' '*50))
     
-    # now saving the trained model
+    # now saving the trained model every 1500 cycles
+        if i % 1000 == 0 and i != 0:
+            saveModel(sess, model_save_path)
+    
+    # saving the model in the end
     saveModel(sess, model_save_path)
