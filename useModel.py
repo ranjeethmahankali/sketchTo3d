@@ -9,4 +9,4 @@ with tf.Session() as sess:
         view: batch[0]
     })
 
-    saveResults(newBatch)
+    saveResults(newBatch, saveImages=False)
