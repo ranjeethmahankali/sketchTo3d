@@ -17,6 +17,28 @@ def loadModel(sess, savedPath):
     saver.restore(sess, savedPath)
     print('loaded the model from to %s'%savedPath)
 
+# this method returns the loss
+def calcLoss(m, v, vTrue):
+    # this is the absolute difference between the two tensors
+    absDiff = tf.abs(m-vTrue)
+    scale = 10
+    v_sum = tf.reduce_sum(v) / scale
+    vTrue_sum = tf.reduce_sum(vTrue) / scale
+
+    maskZeros = vTrue
+    maskOnes = 1 - vTrue
+
+    # this is the error for not filling the voxels that are supposed to be filled
+    error_ones = tf.reduce_sum(tf.mul(absDiff, maskZeros))
+    # this is the error for filling the voxels that are not supposed to be filled
+    error_zeros = tf.reduce_sum(tf.mul(absDiff, maskOnes))
+
+    # this is the dynamic factor representing how much you care about which error
+    factor = tf.nn.sigmoid(v_sum - vTrue_sum)
+
+    loss = (factor*error_zeros) + ((1-factor)*error_ones)
+    return loss
+
 # now creating all the variables in the model
 with tf.variable_scope('vars'):
     w1 = weightVariable([768, 1536],'w1')
@@ -50,12 +72,11 @@ h2 = tf.nn.relu(tf.matmul(h1, w2) + b2)
 m0 = tf.reshape(h2, [-1,6,6,4,16])
 
 m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,8]) + bd1)
-m2 = tf.nn.relu(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
+m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
 
 vox = tf.floor(2*m2)
 
-loss = tf.reduce_mean(tf.abs(m2 - voxTrue))
-loss += tf.abs(tf.reduce_sum(voxTrue) - tf.reduce_sum(vox))
+loss = calcLoss(m2, vox, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 accuracy = 100*tf.reduce_mean(tf.cast(tf.equal(vox, voxTrue), tf.float32))
