@@ -82,7 +82,8 @@ class dataset:
         # getting the list of files in the dirPath
         self.trainFileList = os.listdir(self.dirPath)
         # removing the test data file from the list of training data files
-        self.trainFileList.remove(self.testFileName)
+        if len(self.trainFileList) > 1:
+            self.trainFileList.remove(self.testFileName)
         
         self.curFile = None
         if len(self.trainFileList) > 0:
