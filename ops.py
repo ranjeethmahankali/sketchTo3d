@@ -53,6 +53,18 @@ def toImage(data, imgSize = (24, 32)):
     newData = newData.astype(np.uint8)
     return Image.fromarray(newData)
 
+# this method converts a list of images into a feed ready batch
+def prepareImages(fileList):
+    batch = []
+    for fileName in fileList:
+        img = Image.open(fileName).convert("L")
+        arr = np.array(img)
+        arr = np.expand_dims(arr, 2)
+        arr = arr.astype(np.float32)
+        arr /= 255
+        batch.append(arr)
+    return np.array(batch)
+
 # this method returns the time estimate as a string
 def estimate_time(startTime, totalCycles, finishedCycles):
     timePast = time.time() - startTime

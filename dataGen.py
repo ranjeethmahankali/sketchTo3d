@@ -9,6 +9,7 @@ sampleNum = int(input('Enter number of samples:'))
 
 currentView = sc.doc.Views.ActiveView
 picSize = Size(32,24)
+voxelSize = 1.0
 xLim = [-11,12]
 yLim = [-11,12]
 zLim = [0,15]
@@ -16,6 +17,27 @@ zLim = [0,15]
 def writeToFile(data, name):
 	with open(str(name)+'.pkl', 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+
+def makeCube(center, size):
+	if size <= 0:
+		print('cube size invalid')
+		return None
+	
+	s = size/2
+	vert = [
+		[center[0]-s, center[1]-s, center[2]-s],
+		[center[0]-s, center[1]+s, center[2]-s],
+		[center[0]+s, center[1]+s, center[2]-s],
+		[center[0]+s, center[1]-s, center[2]-s],
+		[center[0]-s, center[1]-s, center[2]+s],
+		[center[0]-s, center[1]+s, center[2]+s],
+		[center[0]+s, center[1]+s, center[2]+s],
+		[center[0]+s, center[1]-s, center[2]+s]
+	]
+	
+	cubeID = rs.AddBox(vert)
+	rs.SurfaceIsocurveDensity(cubeID, 0)
+	return cubeID
 
 class scene:
 	def __init__(self):
@@ -92,8 +114,14 @@ class scene:
 					if bytes[x][y][z] == 1:
 						ptList.append([x+xLim[0],y+yLim[0],z])
 		
-		cloudID = rs.AddPointCloud(ptList)
-		return cloudID
+		boxes = []
+		for pt in ptList:
+			boxes.append(makeCube(pt, voxelSize))
+		
+		group = rs.AddGroup('voxels')
+		rs.AddObjectsToGroup(boxes, 'voxels')
+			
+		return group
 						
 	
 	#return voxels as a 3d array
@@ -122,24 +150,29 @@ class scene:
 		return arr
 	
 scn = scene()
-#views = []
-#models = []
-#rs.EnableRedraw(False)
-#scn.populate([1,3])
-#rs.EnableRedraw(True)
-#for i in range(sampleNum):
-#	img_data = scn.getView()
-#	voxel_data = scn.getVoxelBytes()
-#	
-#	views.append(img_data)
-#	models.append(voxel_data)
-#
-##scn.reset()
-#
-#fileName = input('Enter File Name:')
-#writeToFile([views, models], 'results/test')
+def test():
+	views = []
+	models = []
+	rs.EnableRedraw(False)
+#	scn.populate([1,2])
+	rs.EnableRedraw(True)
+	for i in range(sampleNum):
+		img_data = scn.getView()
+		voxel_data = scn.getVoxelBytes()
+		
+		views.append(img_data)
+		models.append(voxel_data)
+	
+	#scn.reset()
+	writeToFile([views, models], 'results/test')
 
-with open('results/vox.pkl', 'rb') as inp:
-	vox = pickle.load(inp)
+def result():
+	with open('results/vox.pkl', 'rb') as inp:
+		vox = pickle.load(inp)
+	
+	rs.EnableRedraw(False)
+	model = scn.getVoxels(vox[0])
+	rs.EnableRedraw(True)
 
-cld = scn.getVoxels(vox[0])
+#test()
+result()
