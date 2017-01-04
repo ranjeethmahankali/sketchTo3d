@@ -1,11 +1,12 @@
-from model import *
+# from model import *
+from model2 import *
 
 rhinoDataset = dataset('data/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    loadModel(sess, model_save_path)
+    # loadModel(sess, model2_save_path)
 
-    cycles = 8000
+    cycles = 10000
     startTime = time.time()
 
     for i in range(cycles):
@@ -36,4 +37,4 @@ with tf.Session() as sess:
             saveModel(sess, model_save_path)
     
     # saving the model in the end
-    saveModel(sess, model_save_path)
+    saveModel(sess, model2_save_path)

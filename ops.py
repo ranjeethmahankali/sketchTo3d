@@ -11,6 +11,7 @@ batch_size = 5
 resDir = 'results/'
 learning_rate = 1e-5
 model_save_path = 'savedModels/model_1.ckpt'
+model2_save_path = 'savedModels/model_2.ckpt'
 
 # this method saves the model
 def saveModel(sess, savePath):
