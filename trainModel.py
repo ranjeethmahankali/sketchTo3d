@@ -34,7 +34,7 @@ with tf.Session() as sess:
     
     # now saving the trained model every 1500 cycles
         if i % 1000 == 0 and i != 0:
-            saveModel(sess, model_save_path)
+            saveModel(sess, model2_save_path)
     
     # saving the model in the end
     saveModel(sess, model2_save_path)
