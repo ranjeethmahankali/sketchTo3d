@@ -44,15 +44,15 @@ with tf.variable_scope('vars'):
     # naming convention
     # w is for weights and b is fo r biases
     # c is for convolutional, f is for fully connected, d is for deconvolutional
-    wc1  = weightVariable([5,5,1,32], 'wc1')
-    bc1 = biasVariable([32], 'bc1')
-    wc2 = weightVariable([5,5,32,64], 'wc2')
-    bc2 = biasVariable([64], 'bc2')
+    wf1 = weightVariable([768, 4992],'wf1')
+    bf1 = biasVariable([4992],'bf1')
+    wf2 = weightVariable([4992, 9216],'wf2')
+    bf2 = biasVariable([9216], 'bf2')
 
-    wf1 = weightVariable([3072, 3840],'wf1')
-    bf1 = biasVariable([3840],'bf1')
-    wf2 = weightVariable([3840, 4608],'wf2')
-    bf2 = biasVariable([4608], 'bf2')
+    wc1  = weightVariable([5,5,4,16], 'wc1')
+    bc1 = biasVariable([16], 'bc1')
+    wc2 = weightVariable([5,5,16,32], 'wc2')
+    bc2 = biasVariable([32], 'bc2')
 
     wd1 = weightVariable([5,5,5,16,32],'wd1')
     bd1 = biasVariable([16], 'bd1')
@@ -60,12 +60,13 @@ with tf.variable_scope('vars'):
     bd2 = biasVariable([1], 'bd2')
 
 # [-1, 24,32,1] - view
-# [-1, 12,16,32] - h_conv1
-# [-1, 6,8,64] - h_conv2
+# [-1, 768] - h_flat
+# [-1, 4992] - h1
+# [-1, 9216] - h2
 
-# [-1, 3072] - h_flat
-# [-1, 3840] - h1
-# [-1, 4608] - h2
+# [-1, 48, 48, 4] - h2d
+# [-1, 24, 24, 16] - h_conv1
+# [-1, 12, 12, 32] - h_conv2
 
 # [-1, 6,6,4,32] - m0
 # [-1, 12, 12, 8, 16] - m1
@@ -74,15 +75,15 @@ with tf.variable_scope('vars'):
 view = tf.placeholder(tf.float32, shape=[None, 24, 32, 1])
 voxTrue = tf.placeholder(tf.float32, shape=[None, 24, 24, 16, 1])
 
-h_conv1 = tf.nn.relu(conv2d(view, wc1) + bc1)
-h_conv2 = tf.nn.relu(conv2d(h_conv1, wc2) + bc2)
-
-h_flat = tf.reshape(h_conv2, [-1, 3072])
-
+h_flat = tf.reshape(view, [-1, 768])
 h1 = tf.nn.relu(tf.matmul(h_flat, wf1) + bf1)
 h2 = tf.nn.relu(tf.matmul(h1, wf2) + bf2)
 
-m0 = tf.reshape(h2, [-1,6,6,4,32])
+h2d = tf.reshape(h2, [-1,48,48,4])
+h_conv1 = tf.nn.relu(conv2d(h2d, wc1) + bc1)
+h_conv2 = tf.nn.relu(conv2d(h_conv1, wc2) + bc2)
+
+m0 = tf.reshape(h_conv2, [-1,6,6,4,32])
 
 m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,16]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
