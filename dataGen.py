@@ -5,17 +5,15 @@ from System.Drawing import *
 import random
 import pickle
 
-sampleNum = int(input('Enter number of samples:'))
-
 currentView = sc.doc.Views.ActiveView
-picSize = Size(32,24)
+picSize = Size(128,96)
 voxelSize = 1.0
 xLim = [-11,12]
 yLim = [-11,12]
 zLim = [0,15]
 
-def writeToFile(data, name):
-	with open(str(name)+'.pkl', 'wb') as output:
+def writeToFile(data, path):
+	with open(path, 'wb') as output:
 		pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
 
 def makeCube(center, size):
@@ -150,21 +148,21 @@ class scene:
 		return arr
 	
 scn = scene()
-def test():
+def makeDataset(num, path):
 	views = []
 	models = []
-	rs.EnableRedraw(False)
-#	scn.populate([1,2])
-	rs.EnableRedraw(True)
-	for i in range(sampleNum):
+	for i in range(num):
+		rs.EnableRedraw(False)
+		scn.populate([1,2])
+		rs.EnableRedraw(True)
 		img_data = scn.getView()
 		voxel_data = scn.getVoxelBytes()
 		
 		views.append(img_data)
 		models.append(voxel_data)
 	
-	#scn.reset()
-	writeToFile([views, models], 'results/test')
+		scn.reset()
+	writeToFile([views, models], path)
 
 def result():
 	with open('results/vox.pkl', 'rb') as inp:
@@ -174,5 +172,8 @@ def result():
 	model = scn.getVoxels(vox[0])
 	rs.EnableRedraw(True)
 
-#test()
-result()
+sampleNum = int(input('Enter number of samples:'))
+fileName= input('Enter the fileName:')
+filePath = 'data/%s.pkl'%fileName
+makeDataset(sampleNum, filePath)
+#result()

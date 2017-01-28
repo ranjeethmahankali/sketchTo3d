@@ -7,11 +7,11 @@ from PIL import Image
 
 # some global params
 # the directory to which teh results will be saved
+imgSize = [96,128]
 batch_size = 5
 resDir = 'results/'
 learning_rate = 1e-5
-model_save_path = 'savedModels/model_1.ckpt'
-model2_save_path = 'savedModels/model_2.ckpt'
+model_save_path = 'savedModels/model_2.ckpt'
 
 # this method saves the model
 def saveModel(sess, savePath):
@@ -46,7 +46,7 @@ def deConv3d(y, w, outShape, strides=[1,2,2,2,1]):
     return tf.nn.conv3d_transpose(y, w, output_shape = outShape, strides=strides, padding='SAME')
 
 # converts data to image
-def toImage(data, imgSize = (24, 32)):
+def toImage(data):
     data = np.reshape(data, imgSize)
     newData = 255*data
     # converting new data into integer format to make it possible to export it as a bitmap

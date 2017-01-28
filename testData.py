@@ -1,5 +1,5 @@
 from ops import *
-dtSet = dataset('newData/')
+dtSet = dataset('data/')
 
 batch = dtSet.next_batch(5)
 
