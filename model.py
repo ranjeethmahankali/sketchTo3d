@@ -1,19 +1,6 @@
 from ops import *
 import sys
 
-
-# this method saves the model
-def saveModel(sess, savePath):
-    saver = tf.train.Saver()
-    saver.save(sess, savePath)
-    print('saved the model to %s'%savePath)
-
-# this method loads the saved model
-def loadModel(sess, savedPath):
-    saver = tf.train.Saver()
-    saver.restore(sess, savedPath)
-    print('loaded the model from to %s'%savedPath)
-
 # this method returns the loss
 def calcLoss(m, v, vTrue):
     # this is the absolute difference between the two tensors
