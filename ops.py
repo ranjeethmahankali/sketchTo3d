@@ -15,15 +15,17 @@ model_save_path = 'savedModels/model_2.ckpt'
 
 # this method saves the model
 def saveModel(sess, savePath):
+    print('\n...saving the models, please wait...')
     saver = tf.train.Saver()
     saver.save(sess, savePath)
-    print('saved the model to %s'%savePath)
+    print('Saved the model to %s'%savePath)
 
 # this method loads the saved model
 def loadModel(sess, savedPath):
+    print('\n...loading the models, please wait...')
     saver = tf.train.Saver()
     saver.restore(sess, savedPath)
-    print('loaded the model from to %s'%savedPath)
+    print('Loaded the model from %s'%savedPath)
 
 # weight variable
 def weightVariable(shape, name):
@@ -123,12 +125,14 @@ class dataset:
     # this loads the data from the current file into the self.data
     def load_data(self):
         with open(self.dirPath + self.curFile,'rb') as inp:
+            print('\nLoading data from %s...'%self.curFile)
             dSet = pickle.load(inp)
         
         self.data = [np.expand_dims(np.array(dSet[0]),3), np.expand_dims(np.array(dSet[1]), 4)]
         
         if self.test_data is None:
             with open(self.dirPath + self.testFileName,'rb') as inp:
+                print('\nLoading test data from %s...'%self.testFileName)
                 dSet = pickle.load(inp)
             
             self.test_data = [np.expand_dims(np.array(dSet[0]),3), np.expand_dims(np.array(dSet[1]), 4)]
