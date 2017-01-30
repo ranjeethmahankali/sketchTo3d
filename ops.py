@@ -123,16 +123,16 @@ class dataset:
         return nextFile
     
     # this loads the data from the current file into the self.data
-    def load_data(self):
+    def load_data(self, silent = False):
         with open(self.dirPath + self.curFile,'rb') as inp:
-            print('\nLoading data from %s...'%self.curFile)
+            if not silent: print('\nLoading data from %s...'%self.curFile)
             dSet = pickle.load(inp)
         
         self.data = [np.expand_dims(np.array(dSet[0]),3), np.expand_dims(np.array(dSet[1]), 4)]
         
         if self.test_data is None:
             with open(self.dirPath + self.testFileName,'rb') as inp:
-                print('\nLoading test data from %s...'%self.testFileName)
+                if not silent: print('\nLoading test data from %s...'%self.testFileName)
                 dSet = pickle.load(inp)
             
             self.test_data = [np.expand_dims(np.array(dSet[0]),3), np.expand_dims(np.array(dSet[1]), 4)]
@@ -149,7 +149,7 @@ class dataset:
             end = (self.c + size)%self.data_num
             self.c = 0
             self.curFile = self.next_file()
-            self.load_data()
+            self.load_data(silent = True)
 
             batch2 = [self.data[0][self.c: end], self.data[1][self.c: end]]
             # now joining batch 2 to the original batch
