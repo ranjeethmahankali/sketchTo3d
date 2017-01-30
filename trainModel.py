@@ -4,11 +4,11 @@ from model import *
 rhinoDataset = dataset('data/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    # loadModel(sess, model_save_path)
+    loadModel(sess, model_save_path)
 
-    cycles = 5000
+    cycles = 10000
     testStep = 40
-    saveStep = 500
+    saveStep = 1000
     startTime = time.time()
     try:
         for i in range(cycles):
