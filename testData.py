@@ -1,8 +1,9 @@
 from ops import *
 dtSet = dataset('data/')
 
-batch = dtSet.next_batch(5)
+num = 20
+batch = dtSet.next_batch(num)
 
-for i in range(5):
+for i in range(num):
     img = toImage(batch[0][i: i+1])
-    img.save('data/%s.png'%i)
+    img.save('results/%s.png'%i)
