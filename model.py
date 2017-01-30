@@ -5,7 +5,7 @@ import sys
 def calcLoss(m, v, vTrue):
     # this is the absolute difference between the two tensors
     absDiff = tf.abs(m-vTrue)
-    scale = 10
+    scale = 2
     v_sum = tf.reduce_sum(v) / scale
     vTrue_sum = tf.reduce_sum(vTrue) / scale
 
