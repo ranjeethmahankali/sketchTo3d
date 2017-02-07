@@ -165,15 +165,15 @@ def makeDataset(num, path):
 	writeToFile([views, models], path)
 
 def result():
-	with open('results/vox.pkl', 'rb') as inp:
+	with open('results/19.pkl', 'rb') as inp:
 		vox = pickle.load(inp)
 	
 	rs.EnableRedraw(False)
 	model = scn.getVoxels(vox[0])
 	rs.EnableRedraw(True)
 
-sampleNum = int(input('Enter number of samples:'))
-fileName= input('Enter the fileName:')
-filePath = 'data/%s.pkl'%fileName
-makeDataset(sampleNum, filePath)
-#result()
+#sampleNum = int(input('Enter number of samples:'))
+#fileName= input('Enter the fileName:')
+#filePath = 'data/%s.pkl'%fileName
+#makeDataset(sampleNum, filePath)
+result()
