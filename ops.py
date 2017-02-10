@@ -11,7 +11,8 @@ imgSize = [96,128]
 batch_size = 5
 resDir = 'results/'
 learning_rate = 1e-5
-model_save_path = 'savedModels/model_2.ckpt'
+model_save_path = ['savedModels/model_2.ckpt',
+                    'savedModels/model_3.ckpt']
 
 # this method saves the model
 def saveModel(sess, savePath):

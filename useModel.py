@@ -2,7 +2,7 @@ from model import *
 
 # testSet = dataset('results/')
 with tf.Session() as sess:
-    loadModel(sess, model_save_path)
+    loadModel(sess, model_save_path[0])
 
     # batch = testSet.test_batch(batch_size)
     batch = prepareImages(['results/8.png']*batch_size)
