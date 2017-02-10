@@ -162,8 +162,13 @@ class ball_scene:
 		isTree = None
 		for i in range(objNum):
 			size = random.randint(sizeRange[0], sizeRange[1])
-			isTree = random.sample([True, False],1)[0]
-			print(isTree)
+			rand = random.randint(0,1)
+			if rand == 0:
+				isTree = True
+			elif rand == 1:
+				isTree = False
+				
+			#	print(objNum, isTree)
 			
 			rad = size/2
 			rad_i = int(math.ceil(rad))
@@ -249,6 +254,7 @@ class ball_scene:
 				while z <= zLim[1]:
 					#check if point inside
 					for surf in self.objects:
+						if not rs.IsSurface(str(surf)): continue
 						if rs.IsPointInSurface(surf, [x,y,z]):
 							if arr[x-xLim[0]][y-yLim[0]][z] == 0:arr[x-xLim[0]][y-yLim[0]][z] = 1
 							break
@@ -283,19 +289,41 @@ def BoxResult():
 	model = scn.getVoxels(vox[0])
 	rs.EnableRedraw(True)
 
+def BallResult():
+	scn = ball_scene()
+	with open('ball_dataset/1.pkl', 'rb') as inp:
+		vox = pickle.load(inp)
+	
+	rs.EnableRedraw(False)
+	model = scn.getVoxels(vox[1][6])
+	rs.EnableRedraw(True)
+
 #sampleNum = int(input('Enter number of samples:'))
 #fileName= input('Enter the fileName:')
 #filePath = 'data/%s.pkl'%fileName
 #makeBoxDataset(sampleNum, filePath)
 #BoxResult()
+def makeBallDataset(num, path):
+	scn = ball_scene()
+	views = []
+	models = []
+	
+	for i in range(num):
+		rs.EnableRedraw(False)
+		scn.populate([1,1], [6,6])
+		rs.EnableRedraw(True)
+		
+		img_data = scn.getView()
+		voxel_data = scn.getVoxelBytes()
+		
+		views.append(img_data)
+		models.append(voxel_data)
+	
+		scn.reset()
+	
+	writeToFile([views, models], path)
 
-scn = ball_scene()
-rs.EnableRedraw(False)
-scn.populate([1,3])
-rs.EnableRedraw(True)
-#inp = input('waiting...')
-#rs.EnableRedraw(False)
-#bytes = scn.getVoxelBytes()
-##scn.reset()
-#vox = scn.getVoxels(bytes)
-#rs.EnableRedraw(True)
+sampleNum = int(input('Enter number of samples:'))
+fileName= input('Enter the fileName:')
+filePath = 'ball_dataset/%s.pkl'%fileName
+makeBallDataset(sampleNum, filePath)
