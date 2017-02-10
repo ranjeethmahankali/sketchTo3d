@@ -7,7 +7,8 @@ from PIL import Image
 
 # some global params
 # the directory to which teh results will be saved
-imgSize = [96,128]
+# imgSize = [96,128]
+imgSize = [48, 64]
 batch_size = 5
 resDir = 'results/'
 learning_rate = 1e-5
@@ -100,6 +101,18 @@ class dataset:
         # removing the test data file from the list of training data files
         if len(self.trainFileList) > 1:
             self.trainFileList.remove(self.testFileName)
+
+        #removing any other file than pickled data files from the list
+        i = 0
+        while i < len(self.trainFileList):
+            if not self.trainFileList[i].endswith('.pkl'):
+                # print('removing %s'%self.trainFileList[i])
+                del self.trainFileList[i]
+                i -= 1
+            
+            i += 1
+        
+        # print(self.trainFileList)
         
         self.curFile = None
         if len(self.trainFileList) > 0:
