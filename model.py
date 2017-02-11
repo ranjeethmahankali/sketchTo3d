@@ -44,7 +44,7 @@ with tf.variable_scope('vars'):
     bd2 = biasVariable([1], 'bd2')
 
 # [-1, 96,128,1] - view
-# [-1, 12288] - h_flat
+# [-1, 3072] - h_flat
 # [-1, 10240] - h1
 # [-1, 9216] - h2
 
