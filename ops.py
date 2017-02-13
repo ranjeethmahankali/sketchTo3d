@@ -10,7 +10,8 @@ from PIL import Image
 # imgSize = [96,128]
 imgSize = [48, 64]
 batch_size = 5
-resDir = 'results/'
+# resDir = 'results/'
+resDir = 'results_ball/'
 learning_rate = 1e-5
 model_save_path = ['savedModels/model_2.ckpt',
                     'savedModels/model_3.ckpt']
