@@ -291,11 +291,11 @@ def BoxResult():
 
 def BallResult():
 	scn = ball_scene()
-	with open('ball_dataset/1.pkl', 'rb') as inp:
+	with open('results_ball/vox_2.pkl', 'rb') as inp:
 		vox = pickle.load(inp)
 	
 	rs.EnableRedraw(False)
-	model = scn.getVoxels(vox[1][6])
+	model = scn.getVoxels(vox[4])
 	rs.EnableRedraw(True)
 
 #sampleNum = int(input('Enter number of samples:'))
@@ -323,7 +323,8 @@ def makeBallDataset(num, path):
 	
 	writeToFile([views, models], path)
 
-sampleNum = int(input('Enter number of samples:'))
-fileName= input('Enter the fileName:')
-filePath = 'ball_dataset/%s.pkl'%fileName
-makeBallDataset(sampleNum, filePath)
+#sampleNum = int(input('Enter number of samples:'))
+#fileName= input('Enter the fileName:')
+#filePath = 'ball_dataset/%s.pkl'%fileName
+#makeBallDataset(sampleNum, filePath)
+BallResult()
