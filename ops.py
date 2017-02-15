@@ -92,7 +92,6 @@ def estimate_time(startTime, totalCycles, finishedCycles):
 # this is the dataset object which is responsible with supplying data for training as well as
 # testing purposes
 class dataset:
-    # this is the new line
     # the dirPath is the path of the directory
     # testFile is the name of the file with the test examples
     def __init__(self, dirPath = './', testFile='test'):
