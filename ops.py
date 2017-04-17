@@ -12,7 +12,7 @@ imgSize = [48, 64]
 batch_size = 5
 # resDir = 'results/'
 resDir = 'results_ball/'
-learning_rate = 1e-5
+learning_rate = 1e-4
 model_save_path = ['savedModels/model_2.ckpt',
                     'savedModels/model_3.ckpt']
 
@@ -224,5 +224,32 @@ def saveResults(batch, fileName='vox.pkl', version = 2, saveImages = True):
             img.save(resDir+'%s.png'%i)
     
     print(' ... results saved')
+
+# this creates summaries for variables to be used by tensorboard
+def summarize(varT):
+    varName = varT.name[:-2]
+    with tf.name_scope(varName):
+        var_mean = tf.reduce_mean(varT)
+        var_sum = tf.reduce_sum(varT)
+        tf.summary.scalar('mean', var_mean)
+        tf.summary.scalar('sum', var_sum)
+
+        with tf.name_scope('stddev'):
+            stddev = tf.sqrt(tf.reduce_mean(tf.square(varT - var_mean)))
+        
+        tf.summary.scalar('stddev', stddev)
+        tf.summary.scalar('max', tf.reduce_max(varT))
+        tf.summary.scalar('min', tf.reduce_min(varT))
+        tf.summary.histogram('histogram', varT)
+
+# this returns the writer objects for training and testing
+def getSummaryWriters(sess):
+    train_writer = tf.summary.FileWriter(log_dir + 'train', sess.graph)
+    test_writer = tf.summary.FileWriter(log_dir + 'test')
+
+    return [train_writer, test_writer]
+
+# from here down is the sandbox place to check and verify the code above before using it in
+# the other files
 # from here down is the sandbox place to check and verify the code above before using it in
 # the other files

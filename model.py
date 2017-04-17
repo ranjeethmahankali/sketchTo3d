@@ -1,7 +1,7 @@
 from ops import *
 import sys
 
-# this method returns the loss
+# this method returns the custom defined loss
 def calcLoss(m, v, vTrue):
     # this is the absolute difference between the two tensors
     absDiff = tf.abs(m-vTrue)
@@ -22,6 +22,31 @@ def calcLoss(m, v, vTrue):
 
     loss = (factor*error_zeros) + ((1-factor)*error_ones)
     return loss
+
+# this is for sigmoid cross entropy loss
+def sigmoid_loss(m , vTrue):
+    epsilon = 1e-9
+    cross_entropy = -((vTrue * tf.log(m + epsilon))+((1-vTrue)*tf.log(1-m+epsilon)))
+    
+    # adding this to summaries
+    ce_by_example = tf.reduce_sum(cross_entropy, axis=1, name='cross_entropy')
+    summarize(ce_by_example)
+
+    ce_loss = tf.reduce_sum(ce_by_example)
+
+    return ce_loss
+
+# this returns the accuracy tensor
+def accuracy(v, vTrue):
+    correctness = tf.equal(v, vTrue)
+    acc_norm = tf.cast(correctness, tf.float32)
+    acc = tf.multiply(acc_norm, 100)
+
+    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
+
+    summarize(acc_by_example)
+
+    return tf.reduce_mean(acc_by_example)
 
 # now creating all the variables in the model
 with tf.variable_scope('vars'):
@@ -69,12 +94,13 @@ h_conv2 = tf.nn.relu(conv2d(h_conv1, wc2) + bc2)
 
 m0 = tf.reshape(h_conv2, [-1,6,6,4,32])
 
-m1 = tf.nn.relu(deConv3d(m0, wd1, [batch_size, 12,12,8,16]) + bd1)
-m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2)
+m1 = tf.nn.tanh(deConv3d(m0, wd1, [batch_size, 12,12,8,16]) + bd1)
+m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2, name='output')
 
-vox = tf.floor(2*m2)
+vox = graph = tf.round(m2, name='voxels')
 
-loss = calcLoss(m2, vox, voxTrue)
+# loss = calcLoss(m2, vox, voxTrue)
+loss = sigmoid_loss(m2, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-accuracy = 100*tf.reduce_mean(tf.cast(tf.equal(vox, voxTrue), tf.float32))
+accuracy = accuracy(vox, voxTrue)
