@@ -53,9 +53,9 @@ with tf.variable_scope('vars'):
     # naming convention
     # w is for weights and b is fo r biases
     # c is for convolutional, f is for fully connected, d is for deconvolutional
-    wf1 = weightVariable([imgSize[0]*imgSize[1], 10240],'wf1')
-    bf1 = biasVariable([10240],'bf1')
-    wf2 = weightVariable([10240, 9216],'wf2')
+    wf1 = weightVariable([imgSize[0]*imgSize[1], 8192],'wf1')
+    bf1 = biasVariable([8192],'bf1')
+    wf2 = weightVariable([8192, 9216],'wf2')
     bf2 = biasVariable([9216], 'bf2')
 
     wc1  = weightVariable([5,5,4,16], 'wc1')
@@ -104,3 +104,6 @@ loss = sigmoid_loss(m2, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 accuracy = accuracy(vox, voxTrue)
+
+# this is for the summaries during the training
+merged = tf.summary.merge_all()
