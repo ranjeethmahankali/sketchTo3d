@@ -8,3 +8,6 @@
 /data/*
 /ball_dataset/
 /ball_dataset/*
+
+train_log/
+train_log/*
