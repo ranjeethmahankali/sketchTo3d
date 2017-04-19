@@ -9,7 +9,7 @@ from PIL import Image
 # the directory to which teh results will be saved
 # imgSize = [96,128]
 imgSize = [48, 64]
-batch_size = 5
+batch_size = 10
 # resDir = 'results/'
 resDir = 'results_ball/'
 log_dir = 'train_log/1/'
@@ -35,13 +35,13 @@ def loadModel(sess, savedPath):
 
 # weight variable
 def weightVariable(shape, name):
-    initializer = tf.truncated_normal_initializer(stddev=0.02)
+    initializer = tf.truncated_normal_initializer(stddev=0.1)
     weight = tf.get_variable(name=name, shape=shape, initializer=initializer)
     return weight
 
 # bias variable
 def biasVariable(shape, name):
-    initializer = tf.constant_initializer(0.01)
+    initializer = tf.constant_initializer(0.1)
     bias = tf.get_variable(name=name, shape=shape, initializer=initializer)
     return bias
 
