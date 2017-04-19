@@ -34,7 +34,19 @@ def sigmoid_loss(m , vTrue):
 
     ce_loss = tf.reduce_sum(ce_by_example)
 
-    return ce_loss
+    # now implementing regularizations
+    l2_loss = 0
+    for v in varList:
+        l2_loss += tf.nn.l2_loss(v)
+
+    l2_loss *= alpha
+    total_loss = ce_loss + l2_loss
+
+    with tf.name_scope('loss_params'):
+        tf.summary.scalar('l2_loss', l2_loss)
+        tf.summary.scalar('total_loss', total_loss)
+
+    return total_loss
 
 # this returns the accuracy tensor
 def accuracy(v, vTrue):
@@ -68,6 +80,10 @@ with tf.variable_scope('vars'):
     wd2 = weightVariable([5,5,5,1,16],'wd2')
     bd2 = biasVariable([1], 'bd2')
 
+# list of vars we care about
+all_vars = tf.trainable_variables()
+varList = [v for v in all_vars if 'vars' in v.name]
+
 # [-1, 96,128,1] - view
 # [-1, 3072] - h_flat
 # [-1, 10240] - h1
@@ -96,8 +112,10 @@ m0 = tf.reshape(h_conv2, [-1,6,6,4,32])
 
 m1 = tf.nn.tanh(deConv3d(m0, wd1, [batch_size, 12,12,8,16]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2, name='output')
+summarize(m2)
 
 vox = graph = tf.round(m2, name='voxels')
+summarize(vox)
 
 # loss = calcLoss(m2, vox, voxTrue)
 loss = sigmoid_loss(m2, voxTrue)
