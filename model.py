@@ -4,7 +4,7 @@ import sys
 # this method returns the custom defined loss
 def calcLoss(m, v, vTrue):
     # this is the absolute difference between the two tensors
-    absDiff = tf.abs(m-vTrue)
+    crs_entropy = sigmoid_loss(m, vTrue)
     scale = 2
     v_sum = tf.reduce_sum(v) / scale
     vTrue_sum = tf.reduce_sum(vTrue) / scale
@@ -13,14 +13,20 @@ def calcLoss(m, v, vTrue):
     maskOnes = 1 - vTrue
 
     # this is the error for not filling the voxels that are supposed to be filled
-    error_ones = tf.reduce_sum(tf.mul(absDiff, maskZeros))
+    error_ones = tf.reduce_sum(tf.mul(crs_entropy, maskZeros))
     # this is the error for filling the voxels that are not supposed to be filled
-    error_zeros = tf.reduce_sum(tf.mul(absDiff, maskOnes))
+    error_zeros = tf.reduce_sum(tf.mul(crs_entropy, maskOnes))
 
     # this is the dynamic factor representing how much you care about which error
     factor = tf.nn.sigmoid(v_sum - vTrue_sum)
 
     loss = (factor*error_zeros) + ((1-factor)*error_ones)
+
+    with tf.name_scope('loss_params'):
+        # tf.summary.scalar('l2_loss', l2_loss)
+        tf.summary.scalar('loss', loss)
+        tf.summary.scalar('toggle_factor', factor)
+
     return loss
 
 # this is for sigmoid cross entropy loss
@@ -35,18 +41,20 @@ def sigmoid_loss(m , vTrue):
     ce_loss = tf.reduce_sum(ce_by_example)
 
     # now implementing regularizations
-    l2_loss = 0
-    for v in varList:
-        l2_loss += tf.nn.l2_loss(v)
+    # l2_loss = 0
+    # for v in varList:
+    #     l2_loss += tf.nn.l2_loss(v)
 
-    l2_loss *= alpha
-    total_loss = ce_loss + l2_loss
+    # l2_loss *= alpha
+    # total_loss = ce_loss + l2_loss
 
-    with tf.name_scope('loss_params'):
-        tf.summary.scalar('l2_loss', l2_loss)
-        tf.summary.scalar('total_loss', total_loss)
+    # with tf.name_scope('loss_params'):
+    #     tf.summary.scalar('l2_loss', l2_loss)
+    #     tf.summary.scalar('total_loss', total_loss)
 
-    return total_loss
+    return cross_entropy
+    # return ce_loss
+    # return total_loss
 
 # this returns the accuracy tensor
 def accuracy(v, vTrue):
@@ -114,11 +122,12 @@ m1 = tf.nn.tanh(deConv3d(m0, wd1, [batch_size, 12,12,8,8]) + bd1)
 m2 = tf.nn.sigmoid(deConv3d(m1, wd2, [batch_size, 24,24,16,1]) + bd2, name='output')
 summarize(m2)
 
-vox = graph = tf.round(m2, name='voxels')
+# vox = tf.round(m2, name='voxels')
+vox = tf.floor(2*m2, name='voxels')
 summarize(vox)
 
-# loss = calcLoss(m2, vox, voxTrue)
-loss = sigmoid_loss(m2, voxTrue)
+loss = calcLoss(m2, vox, voxTrue)
+# loss = sigmoid_loss(m2, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 accuracy = accuracy(vox, voxTrue)
