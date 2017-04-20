@@ -63,9 +63,9 @@ def accuracy(v, vTrue):
     acc = tf.multiply(acc_norm, 100)
 
     acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
-    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
-    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
-    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc_by_example, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc_by_example, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc_by_example, axis=1,name='accuracy')
 
     summarize(acc_by_example)
 
