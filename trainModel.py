@@ -2,15 +2,15 @@ from model0 import *
 # from model import *
 import shutil
 
-# rhinoDataset = dataset('data/')
-ballDataset = dataset('ball_dataset/')
+rhinoDataset = dataset('data/')
+# ballDataset = dataset('ball_dataset/')
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     # deleting old logs and setting up new ones
     # shutil.rmtree(log_dir, ignore_errors=True)
     train_writer, test_writer = getSummaryWriters(sess)
     # loadModel(sess, model_save_path[0])
-    loadModel(sess, model_save_path[1])
+    # loadModel(sess, model_save_path[1])
 
     cycles = 2000
     testStep = 40
@@ -19,7 +19,7 @@ with tf.Session() as sess:
     startTime = time.time()
     try:
         for i in range(cycles):
-            batch = ballDataset.next_batch(batch_size)
+            batch = rhinoDataset.next_batch(batch_size)
             _, summary = sess.run([optim, merged], feed_dict={
                 view: batch[0],
                 voxTrue: batch[1]
@@ -34,7 +34,7 @@ with tf.Session() as sess:
             sys.stdout.write('...Training...|%s|-(%s/%s)- %s\r'%(pBar, i, cycles, timer))
 
             if i % testStep == 0:
-                testBatch = ballDataset.test_batch(batch_size)
+                testBatch = rhinoDataset.test_batch(batch_size)
                 acc, v = sess.run([accuracy, vox], feed_dict={
                     view: testBatch[0],
                     voxTrue: testBatch[1]
@@ -44,10 +44,10 @@ with tf.Session() as sess:
         
         # now saving the trained model every 1500 cycles
             if i % saveStep == 0 and i != 0:
-                saveModel(sess, model_save_path[1])
+                saveModel(sess, model_save_path[0])
         
         # saving the model in the end
-        saveModel(sess, model_save_path[1])
+        saveModel(sess, model_save_path[0])
     # if the training is interrupted from keyboard (ctrl + c)
     except KeyboardInterrupt:
         print('')
@@ -55,7 +55,7 @@ with tf.Session() as sess:
         decision = input('Do you want to save the current model before exiting? (y/n):')
 
         if decision == 'y':
-            saveModel(sess, model_save_path[1])
+            saveModel(sess, model_save_path[0])
         elif decision == 'n':
             print('\n...Model not saved...')
             pass
