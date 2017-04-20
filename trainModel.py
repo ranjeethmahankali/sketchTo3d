@@ -12,7 +12,7 @@ with tf.Session() as sess:
     # loadModel(sess, model_save_path[0])
     # loadModel(sess, model_save_path[1])
 
-    cycles = 2000
+    cycles = 4000
     testStep = 40
     saveStep = 1500
     log_step = 5
