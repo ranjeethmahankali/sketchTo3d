@@ -131,7 +131,7 @@ loss = calcLoss(m2, vox, voxTrue)
 # loss = sigmoid_loss(m2, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-accuracy = accuracy(vox, voxTrue)
+accTensor = accuracy(vox, voxTrue)
 
 # this is for the summaries during the training
 merged = tf.summary.merge_all()

@@ -35,7 +35,7 @@ with tf.Session() as sess:
 
             if i % testStep == 0:
                 testBatch = rhinoDataset.test_batch(batch_size)
-                acc, v = sess.run([accuracy, vox], feed_dict={
+                acc, v = sess.run([accTensor, vox], feed_dict={
                     view: testBatch[0],
                     voxTrue: testBatch[1]
                 })
