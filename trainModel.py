@@ -9,10 +9,10 @@ with tf.Session() as sess:
     # deleting old logs and setting up new ones
     shutil.rmtree(log_dir, ignore_errors=True)
     train_writer, test_writer = getSummaryWriters(sess)
-    # loadModel(sess, model_save_path[0])
+    loadModel(sess, model_save_path[0])
     # loadModel(sess, model_save_path[1])
 
-    cycles = 4000
+    cycles = 6000
     testStep = 40
     saveStep = 1500
     log_step = 5
