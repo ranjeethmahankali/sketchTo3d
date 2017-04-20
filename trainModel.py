@@ -1,5 +1,5 @@
+from model0 import *
 # from model import *
-from model import *
 import shutil
 
 # rhinoDataset = dataset('data/')
@@ -24,7 +24,7 @@ with tf.Session() as sess:
                 view: batch[0],
                 voxTrue: batch[1]
             })
-            if i % log_step == 0: train_writer.add_summary(summary,2000+i)
+            if i % log_step == 0: train_writer.add_summary(summary,i)
 
             timer = estimate_time(startTime, cycles, i)
             pL = 10 # this is the length of the progress bar to be displayed
@@ -39,7 +39,7 @@ with tf.Session() as sess:
                     view: testBatch[0],
                     voxTrue: testBatch[1]
                 })
-                test_writer.add_summary(summary, 2000+i)
+                test_writer.add_summary(summary, i)
                 print('Accuracy: %.2f; Sums: %.2f, %.2f%s'%(acc,v.sum(),testBatch[1].sum(),' '*50))
         
         # now saving the trained model every 1500 cycles
