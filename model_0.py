@@ -63,10 +63,13 @@ def accuracy(v, vTrue):
     acc = tf.multiply(acc_norm, 100)
 
     acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
+    acc_by_example = tf.reduce_mean(acc, axis=1,name='accuracy')
 
     summarize(acc_by_example)
 
-    return tf.reduce_mean(acc_by_example)
+    return tf.reduce_mean(acc)
 
 # now creating all the variables in the model
 with tf.variable_scope('vars'):
