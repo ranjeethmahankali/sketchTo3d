@@ -282,12 +282,20 @@ def makeBoxDataset(num, path):
 	writeToFile([views, models], path)
 
 def BoxResult():
-	with open('results/19.pkl', 'rb') as inp:
+	scn = box_scene()
+	with open('results/vox.pkl', 'rb') as inp:
 		vox = pickle.load(inp)
 	
-	rs.EnableRedraw(False)
-	model = scn.getVoxels(vox[0])
-	rs.EnableRedraw(True)
+	for i in range(10):
+		rs.EnableRedraw(False)
+		model = scn.getVoxels(vox[i])
+		rs.EnableRedraw(True)
+		
+		img = RhinoView.CaptureToBitmap(currentView,Size(640,480))
+		img.Save("results/r_%s.png"%i);
+		
+		rs.Command("SelAll")
+		rs.Command("Delete")
 
 def BallResult():
 	scn = ball_scene()
@@ -295,7 +303,7 @@ def BallResult():
 		vox = pickle.load(inp)
 	
 	rs.EnableRedraw(False)
-	model = scn.getVoxels(vox[4])
+	model = scn.getVoxels(vox[0])
 	rs.EnableRedraw(True)
 
 #sampleNum = int(input('Enter number of samples:'))
@@ -327,4 +335,5 @@ def makeBallDataset(num, path):
 #fileName= input('Enter the fileName:')
 #filePath = 'ball_dataset/%s.pkl'%fileName
 #makeBallDataset(sampleNum, filePath)
-BallResult()
+#BallResult()
+BoxResult()
