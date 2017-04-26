@@ -11,7 +11,7 @@ from PIL import Image
 imgSize = [48, 64]
 batch_size = 10
 # resDir = 'results/'
-resDir = 'results_ball/'
+resDir = 'results/'
 log_dir = 'train_log/1/'
 learning_rate = 1e-4
 alpha = 0.002
@@ -58,8 +58,8 @@ def max_pool2x2(x):
     return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
 
 # converts data to image
-def toImage(data):
-    data = np.reshape(data, imgSize)
+def toImage(data, imSize = imgSize):
+    data = np.reshape(data, imSize)
     newData = 255*data
     # converting new data into integer format to make it possible to export it as a bitmap
     # in this case converting it into 8 bit integer
