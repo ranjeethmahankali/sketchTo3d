@@ -1,5 +1,5 @@
-from model_0 import *
-# from model import *
+# from model_0 import *
+from model import *
 import shutil
 
 rhinoDataset = dataset('data/')
@@ -9,8 +9,8 @@ with tf.Session() as sess:
     # deleting old logs and setting up new ones
     shutil.rmtree(log_dir, ignore_errors=True)
     train_writer, test_writer = getSummaryWriters(sess)
-    loadModel(sess, model_save_path[0])
-    # loadModel(sess, model_save_path[1])
+    # loadModel(sess, model_save_path[0])
+    loadModel(sess, model_save_path[1])
 
     cycles = 6000
     testStep = 40
@@ -44,10 +44,10 @@ with tf.Session() as sess:
         
         # now saving the trained model every 1500 cycles
             if i % saveStep == 0 and i != 0:
-                saveModel(sess, model_save_path[0])
+                saveModel(sess, model_save_path[1])
         
         # saving the model in the end
-        saveModel(sess, model_save_path[0])
+        saveModel(sess, model_save_path[1])
     # if the training is interrupted from keyboard (ctrl + c)
     except KeyboardInterrupt:
         print('')
@@ -55,7 +55,7 @@ with tf.Session() as sess:
         decision = input('Do you want to save the current model before exiting? (y/n):')
 
         if decision == 'y':
-            saveModel(sess, model_save_path[0])
+            saveModel(sess, model_save_path[1])
         elif decision == 'n':
             print('\n...Model not saved...')
             pass

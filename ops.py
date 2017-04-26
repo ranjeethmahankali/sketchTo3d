@@ -11,7 +11,8 @@ from PIL import Image
 imgSize = [48, 64]
 batch_size = 10
 # resDir = 'results/'
-resDir = 'results/'
+# resDir = 'results/'
+resDir  = 'results_ball/'
 log_dir = 'train_log/1/'
 learning_rate = 1e-4
 alpha = 0.002

@@ -1,9 +1,11 @@
-from model_0 import *
+# from model_0 import *
+from model import *
 
-testSet = dataset('data/')
+# testSet = dataset('data/')
+testSet = dataset('ball_dataset/')
 # ballDataset = dataset('ball_dataset/')
 with tf.Session() as sess:
-    loadModel(sess, model_save_path[0])
+    loadModel(sess, model_save_path[1])
 
     batch = testSet.test_batch(batch_size*14)
     batch = testSet.test_batch(batch_size)
@@ -15,5 +17,6 @@ with tf.Session() as sess:
     saveResults(newBatch, fileName='vox.pkl', saveImages=False)
 
     for i in range(batch_size):
-        img = toImage(batch[0][i:i+1], imSize = [96,128])
-        img.save('results/%s.png'%(i))
+        # img = toImage(batch[0][i:i+1], imSize = [96,128])
+        img = toImage(batch[0][i:i+1])
+        img.save('results_ball/%s.png'%(i))
