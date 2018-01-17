@@ -11,3 +11,5 @@
 
 train_log/
 train_log/*
+
+*.db
