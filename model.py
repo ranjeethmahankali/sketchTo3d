@@ -13,9 +13,9 @@ def calcLoss(m, v, vTrue):
     maskOnes = 1 - vTrue
 
     # this is the error for not filling the voxels that are supposed to be filled
-    error_ones = tf.reduce_sum(tf.mul(crs_entropy, maskZeros))
+    error_ones = tf.reduce_sum(tf.multiply(crs_entropy, maskZeros))
     # this is the error for filling the voxels that are not supposed to be filled
-    error_zeros = tf.reduce_sum(tf.mul(crs_entropy, maskOnes))
+    error_zeros = tf.reduce_sum(tf.multiply(crs_entropy, maskOnes))
 
     # this is the dynamic factor representing how much you care about which error
     factor = tf.nn.sigmoid(v_sum - vTrue_sum)
@@ -130,7 +130,7 @@ loss = calcLoss(m2, vox, voxTrue)
 # loss = sigmoid_loss(m2, voxTrue)
 
 optim = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-accuracy = accuracy(vox, voxTrue)
+accTensor = accuracy(vox, voxTrue)
 
 # this is for the summaries during the training
 merged = tf.summary.merge_all()

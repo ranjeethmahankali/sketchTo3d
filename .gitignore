@@ -11,5 +11,7 @@
 
 train_log/
 train_log/*
-
+results_ball/
+results_ball/*
 *.db
+*.png
