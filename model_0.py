@@ -95,6 +95,7 @@ with tf.variable_scope('vars'):
     wd2 = weightVariable([5,5,5,1,8],'wd2')
     bd2 = biasVariable([1], 'bd2')
 
+#testingß
 # list of vars we care about
 all_vars = tf.trainable_variables()
 varList = [v for v in all_vars if 'vars' in v.name]
